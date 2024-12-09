@@ -7,6 +7,9 @@ int count_char(char* array);
 int compare_word(char *pattern,char* array, int counter,int counter2, int is_color);
 char* read_input(int *count);
 
+/*
+ *Function has conditions for amount of arguments, read input from terminal
+ */
 int main(int argc, char *argv[]) {
     int ret = EXIT_SUCCESS;
     char *pattern = NULL;
@@ -34,7 +37,6 @@ int main(int argc, char *argv[]) {
         filename = argv[2];
     }
 
-
     if (is_file == 0) {
         FILE *file;
         file = fopen (filename, "r");
@@ -43,7 +45,6 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
 
-        // char *temp = (char*)malloc(capacity*sizeof(char));
         int i =0;
         char c;
         while((c = fgetc(file)) != EOF) {
@@ -63,24 +64,13 @@ int main(int argc, char *argv[]) {
         }
         arr_first[i] = '\n'; //added whitespace to the end of array
         fclose(file);
-        // for (int j = 0; j < 25; j++) {
-        //     printf("%c",arr_first[j]);
-        // }
-        // counter2 = count_char(pattern);
     }
 
 
     counter2 = count_char(pattern);
-    // if (!is_file ) {
-    //     char* arr_first = (char*)malloc(capacity*sizeof(char));
-    // }
     char *temp = (char*)realloc(arr_first, sizeof(char) * (counter+1));
     arr_first = temp;
     arr_first[counter] = '\0';
-    // for (int j = 0; j < counter; j++) {
-    //     printf("%c ",arr_first[j]);
-    // }
-    // printf("%s ",pattern);
     ret = compare_word( pattern, arr_first, counter, counter2, is_color);
 
 
@@ -94,39 +84,28 @@ int main(int argc, char *argv[]) {
 
 int print_word(char *array,char *pattern, int index, int is_color, int counter2) {
     int ret = 0;
-    // printf("%d ", is_color);
-    // printf("%d ", index_for_color);
     while (index > 0 && array[index-1] != '\n' ) {//&& array[index-1] != ' '
-        // putchar(array[index]);
-        // putchar('\n');
         index--;
     }
     int i = 0;
     while (  array[index ] != '\n' && array[index ] != '\0') {
-        for(int j =0; j <counter2;j++) {
-            if(is_color == 1 && array[index ] == pattern[i] ){
-                printf(("\033[01;31m%c\033[0m"),array[index ]);
-                // printf(("\033[01;31m%c\033[0m"),array[index +1]);
+
+        if(is_color == 1 && array[index ] == pattern[i] ){
+            printf("\x1b[01;31m\x1b[K");
+            for(int j =0; j <counter2;j++) {
+                putchar(array[index]);
                 i++;
                 index++;
             }
+            printf("\x1b[m\x1b[K");
         }
-        // index +=counter2;
 
-        // if( is_color == 1 && index == index_for_color) {
-        //     for(int i =0; i < counter2; i ++) {
-        //         printf(("\033[01;31m%c\033[0m"),array[index + i]);
-        //     }
-        //     index +=counter2;
-        //
-        // }
-            i=0;
-            putchar(array[index]);
-            index++;
+        i=0;
+        putchar(array[index]);
+        index++;
 
     }
     putchar('\n');
-
     return ret;
 }
 int count_char(char* array) {
@@ -142,26 +121,12 @@ int count_char(char* array) {
 int  compare_word(char *pattern,char* array, int counter,int counter2, int is_color) {
     int k = 0;
     int ret = -1;
-    // int color = is_color;
-    // printf()
-    // printf("C%d ", counter2);
-    // printf("K%d ", k);
-    // printf("%s ",pattern);
-    // printf("%s ",array);
     for(int j =0; j < counter ; j ++) {
         if(pattern[k] == array[j]) {
             k++;
-            // printf("C%d ", counter2);
-            // printf("K%d ", k);
             if (k == counter2 ) {
-                // printf("%d ", is_color);
-                // printf("C%d ", counter2);
-
-                // printf("%s ",pattern);
                 ret = print_word(array,pattern,j, is_color, counter2);
                 k =0;
-                // if(is_color ==1 )
-                //     ret = print_word(array,j, is_color, counter2);
                 while (j < counter && array[j] != '\n' && array[j] != '\0') {
                     j++;
                 }
@@ -173,7 +138,6 @@ int  compare_word(char *pattern,char* array, int counter,int counter2, int is_co
     if (k==0 && ret == -1) {
         ret = 1;
     }
-    // free(array);
     return ret;
 }
 
@@ -191,9 +155,6 @@ char* read_input(int * count) {
     array = temp;
     array[i] = '\0';
     *count = i;
-    // for (int j = 0; j <= i; j++) {
-    //    printf("%c\n",array[j]);
-    // }
     return array;
 
 }
@@ -216,6 +177,12 @@ k = 0;
 }
 }
 */
+
+/*Things to improve:
+ *control allocated memory: if temp == NULL, stop
+ *make main more beautiful
+ *allocate memory normally
+ */
 
 
 
